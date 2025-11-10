@@ -1,0 +1,19 @@
+# /etc/systemd/system/nftablesBanLog.service
+# https://github.com/jidhub/nftablesBan/blob/main/nftablesBanLog.service 20251110
+# after editing this file, you need: for i in stop disable enable start; do systemctl $i nftablesBanLog; done # systemctl daemon-reload is not yet working.
+[Unit]
+Description=nftablesBan
+Documentation=https://github.com/jidhub/nftablesBan
+After=network.target auditd.service
+ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
+
+[Service]
+EnvironmentFile=-/etc/default/ssh
+ExecStartPre=sh -c 'ln -s `which sh` /var/run/nftablesBan||true;touch /var/run/nftablesBan.fuser-kw'
+ExecStart=/var/run/nftablesBan -c 's=1; while sleep $s >> /var/run/nftablesBan.fuser-kw;do s=1h;echo "{"/etc/systemd/system/nftablesBanLog.service `date +%%FT%%T.%%N`;nft list ruleset|grep " timeout\|packets [1-9]\|set \|chain" | grep -B1 " timeout\|packets [1-9]" | grep -v "^--"|sed "s:{$::";echo "}";done'
+# %% is interpreted to % by systemd
+ExecStop=/var/run/nftablesBan -c 'fuser -kw /var/run/nftablesBan.fuser-kw;echo "{"ExecStopping /etc/systemd/system/nftablesBanLog.service `date +%%FT%%T.%%N`;nft list ruleset|grep " timeout\|packets [1-9]\|set \|chain" | grep -B1 " timeout\|packets [1-9]" | grep -v "^--"|sed "s:{$::";echo "}"'
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
