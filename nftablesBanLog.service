@@ -5,7 +5,6 @@
 Description=nftablesBan
 Documentation=https://github.com/jidhub/nftablesBan
 After=network.target auditd.service
-ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
 
 [Service]
 EnvironmentFile=-/etc/default/ssh
