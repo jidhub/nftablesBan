@@ -26,7 +26,7 @@ The last command will also show various statistics, including information about 
     for i in enable start; do systemctl $i nftablesBanLog; done
 It might be a good idea to log the output of `nft list ruleset` once at least every day. 
 
-The ports in sets `*ports_tested*` are giving ports of packet who got sending IP blackholed for 48 hours. Their timeout matches the timeout of each blackholed IP. The ports information is not necessarily available for all blackholed IP (and class of IP6), because the sets `*ports_tested*` gets overwritten by new IP bans.
+The ports in sets `*ports_tested*` are giving ports of packet who got sending IP blackholed for 48 hours. Their timeout matches the timeout of each blackholed IP. The ports information is not necessarily available for all blackholed IP (and all class of IP6), because the sets `*ports_tested*` gets overwritten by new IP bans.
 
 # requirements
 Should work on any linux(??>5.5??) with systemd and nftables([??>0.9.0??, most recent feature used is `!= @`](https://unix.stackexchange.com/questions/517271/can-i-match-a-set-negatively-in-nftables#comment1386864_517271)).
