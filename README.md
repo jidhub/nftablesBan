@@ -2,7 +2,7 @@
 bans IP for 2 days after 9 out-of-connections packets (this is a pure nftables version of Fail2Ban)
 
 # How to install
-Configure `nftables.conf` by replacing all occurences of "22" by the set of port you want to keep opened, e.g.: `{ 22 443 80 }` or `{ssh https http}`. Braces `{` and `}` are mandatory if you want to have more than one port opened.
+Configure `nftables.conf` by replacing all occurences of "22" by the set of port you want to keep opened, e.g.: `{22 443 80}` or `{ssh https http}`. Braces `{` and `}` are mandatory if you want to have more than one port opened.
 
 You should then put the file to /etc/nftables.conf.
 
