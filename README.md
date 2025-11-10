@@ -25,3 +25,5 @@ The last command will also show various statistics, including information about 
 
     for i in enable start; do systemctl $i nftablesBanLog; done
 It might be a good idea to log the output of `nft list ruleset` once at least every day. 
+
+The ports in sets `*ports_tested*` are giving ports of packet who got sending IP blackholed for 48 hours. Their timeout matches the timeout of each blackholed IP. The ports information is not necessarily available for all blackholed IP (and class of IP6), because the sets `*ports_tested*` gets overwritten by new IP bans.
