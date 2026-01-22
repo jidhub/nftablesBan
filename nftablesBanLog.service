@@ -8,9 +8,9 @@ After=network.target auditd.service
 
 [Service]
 EnvironmentFile=-/etc/default/ssh
-ExecStartPre=sh -c 'ln -s `which sh` /var/run/nftablesBan||true;touch /var/run/nftablesBan.fuser-kw' # useful to get nftablesBan[$PID] instead of sh[$PID] in logs;useful for ExecStop.
-ExecStart=/var/run/nftablesBan -c 's=1; while sleep $s >> /var/run/nftablesBan.fuser-kw;do s=1h;echo "{"/etc/systemd/system/nftablesBanLog.service `date +%%FT%%T.%%N`;nft list ruleset|grep " timeout\|packets [1-9]\|set \|chain" | grep -B1 " timeout\|packets [1-9]" | grep -v "^--"|sed "s:{$::";echo "}";done'
-# %% is interpreted to % by systemd; the sed script is used to only log the dynamic parts of `nft list ruleset`.
+ExecStartPre=nft -f /etc/nftables.conf;sh -c 'ln -s `which sh` /var/run/nftablesBan||true;touch /var/run/nftablesBan.fuser-kw' # debian 12 does not load /etc/nftables.conf after update-related automatic reboots; useful to get nftablesBan[$PID] instead of sh[$PID] in logs;useful for ExecStop.
+ExecStart=/var/run/nftablesBan -c 's=1; while sleep $s >> /var/run/nftablesBan.fuser-kw;do s=3599;echo "{"/etc/systemd/system/nftablesBanLog.service `date +%%FT%%T.%%N`;nft list ruleset|grep " timeout\|packets [1-9]\|set \|chain" | grep -B1 " timeout\|packets [1-9]" | grep -v "^--"|sed "s:{$::";echo "}";done'
+# %% is interpreted to % by systemd ; 3599 and not 1h because the loop takes tens for milisecond, and 0.001% of the content was not logged because of that. The sed script is used to only log the dynamic parts of `nft list ruleset`.
 ExecStop=/var/run/nftablesBan -c 'fuser -kw /var/run/nftablesBan.fuser-kw;echo "{"ExecStopping /etc/systemd/system/nftablesBanLog.service `date +%%FT%%T.%%N`;nft list ruleset|grep " timeout\|packets [1-9]\|set \|chain" | grep -B1 " timeout\|packets [1-9]" | grep -v "^--"|sed "s:{$::";echo "}"'
 Type=simple
 
